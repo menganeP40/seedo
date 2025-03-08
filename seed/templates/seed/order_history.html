@@ -1,0 +1,64 @@
+{% extends 'seed/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Account Menu</h5>
+                        <div class="list-group">
+                            <a href="{% url 'profile' %}" class="list-group-item list-group-item-action">Profile</a>
+                            <a href="{% url 'order_history' %}" class="list-group-item list-group-item-action active">Orders</a>
+                            <a href="{% url 'password_reset' %}" class="list-group-item list-group-item-action">Change Password</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Orders List -->
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Order History</h4>
+                        
+                        {% if orders %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Total</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td>#{{ order.id }}</td>
+                                        <td>{{ order.created_at|date:"M d, Y" }}</td>
+                                        <td><span class="badge bg-{{ order.status|lower }}">{{ order.status }}</span></td>
+                                        <td>₹{{ order.total_amount }}</td>
+                                        <td>
+                                            <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-primary">View</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-center">No orders found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'seed/base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Order #{{ order.id }}</h4>
+                
+                <!-- Order Info -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h5>Order Information</h5>
+                        <p><strong>Order Date:</strong> {{ order.created_at|date:"M d, Y" }}</p>
+                        <p><strong>Status:</strong> <span class="badge bg-{{ order.status|lower }}">{{ order.status }}</span></p>
+                        <p><strong>Total Amount:</strong> ₹{{ order.total_amount }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Shipping Address</h5>
+                        <p>{{ order.shipping_address }}</p>
+                        <p><strong>Contact:</strong> {{ order.contact_number }}</p>
+                    </div>
+                </div>
+                
+                <!-- Order Items -->
+                <h5>Order Items</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.orderitem_set.all %}
+                            <tr>
+                                <td>{{ item.seed.name }}</td>
+                                <td>₹{{ item.price }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>₹{{ item.get_subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                <td><strong>₹{{ order.total_amount }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                
+                <a href="{% url 'order_history' %}" class="btn btn-primary">Back to Orders</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

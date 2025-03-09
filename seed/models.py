@@ -29,6 +29,8 @@ class User(AbstractUser):
 class Seed(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
+    suitable_environment = models.TextField(default='Information about suitable growing condition will be added soon') #if you want something to have in this section 
+    # suitable_environment = models.TextField(null=True , blank=True)
     price = models.DecimalField(max_digits=10 , decimal_places=2)
     image = models.ImageField(upload_to='seed/')
     stock = models.IntegerField(default=0)

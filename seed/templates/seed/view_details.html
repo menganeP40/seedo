@@ -1,4 +1,8 @@
-{% load static %}
+{% extends 'base.html' %}
+
+
+
+<!-- {% load static %}
 
 <!DOCTYPE html>
 <html data-bs-theme="dark" lang="en">
@@ -115,4 +119,52 @@
     <script src=" {% static 'seed/js/startup-modern.js' %} "></script>
 </body>
 
-</html>
+</html> -->
+
+
+
+<!-- ///////////////////////////////////////////////////////////////////////////////////////////////////// -->
+
+
+
+
+{% load static %}
+
+{% block title %}{{ seed.name }} Details - Seedo{% endblock %}
+
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container py-4 py-xl-5">
+        <div class="row row-cols-1 row-cols-md-2">
+            <div class="col">
+                <img class="rounded w-100 h-100 fit-cover" style="min-height: 300px;" src="{{ seed.image.url|default:'https://cdn.bootstrapstudio.io/placeholders/1400x800.png' }}">
+            </div>
+            <div class="col d-flex flex-column justify-content-center p-4">
+                <div class="text-center text-md-start d-flex flex-column align-items-center align-items-md-start mb-5">
+                    <div>
+                        <h4>{{ seed.name }}</h4>
+                        <p>{{ seed.description }}</p>
+                    </div>
+                </div>
+                <div class="text-center text-md-start d-flex flex-column align-items-center align-items-md-start mb-5">
+                    <div>
+                        <h4>Suitable Environment</h4>
+                        <p>{{ seed.suitable_environment }}</p>
+                    </div>
+                </div>
+                <div class="text-center text-md-start d-flex flex-column align-items-center align-items-md-start mb-4">
+                    <div>
+                        <h4>Price: Rs {{ seed.price }}</h4>
+                    </div>
+                </div>
+                <div class="text-center text-md-start d-flex flex-column align-items-center align-items-md-start mb-4">
+                    <div>
+                        <h4>Stock: {{ seed.stock }} units</h4>
+                    </div>
+                </div>
+                <a class="btn btn-primary" type="button" href="{% url 'add_to_cart' seed_id=seed.id %}">Add to cart</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

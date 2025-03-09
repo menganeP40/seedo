@@ -45,6 +45,9 @@ from django.contrib import messages
 from .models import Seed, Testimonial , User , Contacts, Cart , CartItem , Order , OrderItem 
 from .forms import UserRegistrationForm , ContactForm 
 
+from django.views.decorators.csrf import csrf_exempt
+
+
 def index(request):
     seeds = Seed.objects.all()[:4] #will take 4 objects at the index page 
     testimonial = Testimonial.objects.all()[:3] #will take 3 testimonials 

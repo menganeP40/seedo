@@ -42,10 +42,18 @@ from django.shortcuts import render , redirect , get_object_or_404
 from django.contrib.auth import login as auth_login , logout as auth_logout , authenticate
 from django.contrib.auth.decorators import login_required 
 from django.contrib import messages 
-from .models import Seed, Testimonial , User , Contacts, Cart , CartItem , Order , OrderItem 
+from .models import Seed, Testimonial , Contacts, Cart , CartItem , Order , OrderItem 
 from .forms import UserRegistrationForm , ContactForm 
 
-from django.views.decorators.csrf import csrf_exempt
+# from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.forms import AuthenticationForm
+
+
+from django.contrib.auth.models import User
+
+
+
+
 
 
 def index(request):
@@ -63,7 +71,7 @@ def login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         user = authenticate(request, username=username , password=password)
-        if user not in None:
+        if user is not None:
             auth_login(request, user)
             return redirect('index')
         else:
@@ -128,14 +136,49 @@ def view_details(request, seed_id):
     return render(request, 'seed/view_details.html', {'seed': seed})
 
 
+# @login_required
+# def showcart(request):
+#     cart , created = Cart.objects.get_or_create(user=request.user)
+#     return render(request, 'seed/showcart.html',{'cart':cart})
+
+
 @login_required
 def showcart(request):
-    cart , created = Cart.objects.get_or_create(user=request.user)
-    return render(request, 'seed/showcart.html',{'cart':cart})
+    # Get the user's cart or create a new one if it doesn't exist
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    
+    # Calculate the total price of all items in the cart
+    cart_total = sum(item.get_subtotal() for item in cart.items.all())
+    
+    context = {
+        'cart': cart,
+        'cart_total': cart_total,
+    }
+    
+    return render(request, 'seed/showcart.html', context)
+
+
+
+
+@login_required
+def update_cart_item(request, item_id):
+    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
+    
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        if quantity > 0:
+            cart_item.quantity = quantity
+            cart_item.save()
+    
+    return redirect('showcart')
+
+
+
 
 @login_required
 def add_to_cart(request, seed_id):
     seed = get_object_or_404(Seed, id=seed_id)
+    
     cart , created = Cart.objects.get_or_create(user=request.user)
     cart_item , created = CartItem.objects.get_or_create(cart=cart , seed=seed)
     if not created:
@@ -144,12 +187,21 @@ def add_to_cart(request, seed_id):
 
     return redirect('showcart')
 
+
+
+
+
 @login_required
 def remove_from_cart(request, item_id):
     cart_item = get_object_or_404(CartItem, id = item_id , cart__user = request.user)
     cart_item.delete()
 
     return redirect('showcart')
+
+
+
+
+
 
 
 @login_required
@@ -180,3 +232,28 @@ def checkout(request):
     return render(request, 'seed/checkout.html', {'cart':cart})
 
 
+@login_required
+def logout_view(request):
+    auth_logout(request)
+    return redirect('index')
+
+
+@login_required
+def profile(request):
+    # return render(request, 'seed/profile.html')
+    return render(request,'seed/order_history.html')
+
+
+
+# creating a custom view for login_for_feedback , is user is logged in , then only he can give feedback
+def login_for_feedback(request):
+    form = AuthenticationForm(request)
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            auth_login(request, form.get_user())
+            return redirect('contacts')
+        else:
+            form = AuthenticationForm()
+    
+    return render(request , 'seed/login.html' , {'form':form})

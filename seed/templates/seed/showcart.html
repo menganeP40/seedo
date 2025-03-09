@@ -1,161 +1,61 @@
+{% extends "seed/base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html data-bs-theme="dark" lang="en">
+{% block title %}ShowCart - Seedo{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>ShowCart - Seedo</title>
-    <link rel="stylesheet" href=" {% static 'seed/bootstrap/css/bootstrap.min.css' %} ">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
-    <link rel="stylesheet" href=" {% static 'seed/css/animate.min.css' %} ">
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-md fixed-top navbar-shrink py-3" id="mainNav">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href=" {% url 'index' %} "><span>Seedo</span></a>
-            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
-                <span class="visually-hidden">Toggle navigation</span>
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navcol-1">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href=" {% url 'explore' %} ">Explore</a></li>
-                    <li class="nav-item"><a class="nav-link active" href=" {% static 'cart' %} ">Cart</a></li>
-                    <li class="nav-item"><a class="nav-link" href=" {% url 'testimonials' %} ">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link" href=" {% url 'login' %} ">Log in</a></li>
-                    <li class="nav-item"><a class="nav-link" href=" {% url 'signup' %} ">Sign up</a></li>
-                </ul>
-                <a class="btn btn-primary shadow" role="button" href=" {% url 'signup' %} ">Sign up</a>
-            </div>
-        </div>
-    </nav>
-
-    <section class="py-5 mt-5">
-        <div class="container py-4 py-xl-5">
-            <h2 class="text-center">Your Cart Items</h2>
-            <div class="table-responsive">
-                <table class="table table-dark table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col">Item</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Total</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container py-4 py-xl-5">
+        <h2 class="text-center">Your Cart Items</h2>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Item</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Total</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if cart.items.all %}
+                        {% for item in cart.items.all %}
                         <tr>
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src=" {% static 'seed/img/gb487c0babff54f9679b3044c2733706d05ee703234115aaddd84c3e540aeb816c547075881dafeb15a8a13ad6cdf8cffa3f6f83803b7fc89bfd2832f2083bf5c_640.jpg' %} " alt="Poppy Seeds" style="width: 50px; height: auto; margin-right: 10px;">
-                                    Poppy Seeds
+                                    <img src="{% if item.seed.image %}{{ item.seed.image.url }}{% else %}{% static 'seed/img/default-seed.jpg' %}{% endif %}" alt="{{ item.seed.name }}" style="width: 50px; height: auto; margin-right: 10px;">
+                                    {{ item.seed.name }}
                                 </div>
                             </td>
                             <td>
-                                <input type="number" class="form-control" value="2" min="1">
+                                <form method="post" action="{% url 'update_cart_item' item.id %}" class="d-flex">
+                                    {% csrf_token %}
+                                    <input type="number" name="quantity" class="form-control" value="{{ item.quantity }}" min="1">
+                                    <button type="submit" class="btn btn-sm btn-secondary ms-2">Update</button>
+                                </form>
                             </td>
-                            <td>Rs5.00</td>
-                            <td>RS10.00</td>
+                            <td>Rs{{ item.seed.price }}</td>
+                            <td>Rs{{ item.get_subtotal }}</td>
                             <td>
-                                <button class="btn btn-danger">Remove</button>
+                                <a href="{% url 'remove_from_cart' item.id %}" class="btn btn-danger">Remove</a>
                             </td>
                         </tr>
+                        {% endfor %}
+                    {% else %}
                         <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <img src=" {% static 'seed/img/gb3fb39013cf7acb17d17caae3cbb4e700dca8983e614cec822acb4c4dd86bc13dae9175e07782b1169e4ca2bd4aaa213212dbda84c732fc5f689e9ca0bb70a34_640.jpg' %} " alt="Avocado Seeds" style="width: 50px; height: auto; margin-right: 10px;">
-                                    Avocado Seeds
-                                </div>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" value="1" min="1">
-                            </td>
-                            <td>Rs3.00</td>
-                            <td>Rs3.00</td>
-                            <td>
-                                <button class="btn btn-danger">Remove</button>
-                            </td>
+                            <td colspan="5" class="text-center">Your cart is empty. <a href="{% url 'explore' %}">Continue shopping</a></td>
                         </tr>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    <img src=" {% static 'seed/img/gaf86122c73c7ef3cc4123d744efb5be779994e72d503abb94b426d68e33da46eaabeb6d83898eb69af3c68d372165ec9f769d53b492bdcc6e7db13fa8ddf6e47_640.jpg' %} " alt="Pumpkin Seeds" style="width: 50px; height: auto; margin-right: 10px;">
-                                    Pumpkin Seeds
-                                </div>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" value="3" min="1">
-                            </td>
-                            <td>Rs2.00</td>
-                            <td>Rs6.00</td>
-                            <td>
-                                <button class="btn btn-danger">Remove</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="text-center">
-                <h3>Total: Rs19.00</h3>
-                <a class="btn btn-success" href=" {% url 'checkout' %} ">Proceed to Checkout</a>
-            </div>
+                    {% endif %}
+                </tbody>
+            </table>
         </div>
-    </section>
-
-    <footer>
-        <div class="container py-4 py-lg-5">
-            <div class="row row-cols-2 row-cols-md-4">
-                <div class="col-12 col-md-3">
-                    <div class="fw-bold d-flex align-items-center mb-2"><span>Seedo</span></div>
-                    <p class="text-muted">A medium between farmers and you, to provide the best quality seeds at your doorstep.</p>
-                </div>
-                <div class="col-sm-4 col-md-3 text-lg-start d-flex flex-column">
-                    <h3 class="fs-6 fw-bold">Services</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Seeds Delivery</a></li>
-                        <li><a href="#">Plants Delivery</a></li>
-                        <li><a href="#">Compost Delivery</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-4 col-md-3 text-lg-start d-flex flex-column">
-                    <h3 class="fs-6 fw-bold">About</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Company</a></li>
-                        <li><a href="#">Team</a></li>
-                        <li><a href="#">Legacy</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-4 col-md-3 text-lg-start d-flex flex-column">
-                    <h3 class="fs-6 fw-bold">Careers</h3>
-                    <ul class="list-unstyled">
-                        <li><a href="#">Job openings</a></li>
-                        <li><a href="#">Employee success</a></li>
-                        <li><a href="#">Benefits</a></li>
-                    </ul>
-                </div>
-            </div>
-            <hr>
-            <footer class="text-center bg-dark"></footer>
-            <footer class="text-center">
-                <div class="container text-muted py-4 py-lg-5">
-                    <ul class="list-inline">
-                        <li class="list-inline-item me-4"></li>
-                        <li class="list-inline-item me-4"></li>
-                        <li class="list-inline-item"></li>
-                    </ul>
-                    <p class="mb-0">Copyright © 2024 Seedo</p>
-                </div>
-            </footer>
+        <div class="text-center">
+            {% if cart.items.all %}
+                <h3>Total: Rs{{ cart_total }}</h3>
+                <a class="btn btn-success" href="{% url 'checkout' %}">Proceed to Checkout</a>
+            {% endif %}
         </div>
-    </footer>
-
-    <script src=" {% static 'seed/bootstrap/js/bootstrap.min.js' %} "></script>
-    <script src=" {% static 'seed/js/bs-init.js' %} "></script>
-    <script src=" {% static 'seed/js/startup-modern.js' %} "></script>
-</body>
-
-</html>
+    </div>
+</section>
+{% endblock %}

@@ -333,11 +333,11 @@
         </div>
         <div class="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
             <div class="col">
-                <div class="card"><img class="card-img-top w-100 d-block fit-cover" alt="a small potted plant sitting on top of a table" data-bss-hover-animate="pulse" style="height: 200px;" src="{% static 'seed/img/photo-1675938100394-44a2582dc016.jpg' %}">
+                <div class="card"><img class="card-img-top w-100 d-block fit-cover" alt="a small potted plant sitting on top of a table" data-bss-hover-animate="pulse" style="height: 200px;" src="{% static 'seed/img/flax.jpg' %}">
                     <div class="card-body p-4">
                         <h4 class="card-title">Flax Seeds</h4>
                         <p class="card-text">Flaxseed is particularly high in thiamine, a B vitamin that plays a key role in energy metabolism as well as cell function. It's also a great source of copper, which is involved in brain development, immune health.</p>
-                        <a class="btn btn-primary" type="button" href="{% url 'view_details' seed_id=1 %}">View Details</a>
+                        <a class="btn btn-primary" type="button" href="{% url 'view_details' seed_id=7 %}">View Details</a>
                         <div class="d-flex">
                             <div></div>
                         </div>
@@ -345,7 +345,7 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card"><img class="card-img-top w-100 d-block fit-cover" alt="brown wooden heart shaped decor" data-bss-hover-animate="pulse" style="height: 200px;" src="{% static 'seed/img/photo-1600841793042-55790f1375da.jpg' %}">
+                <div class="card"><img class="card-img-top w-100 d-block fit-cover" alt="brown wooden heart shaped decor" data-bss-hover-animate="pulse" style="height: 200px;" src="{% static 'seed/img/muskmelon.jpg' %}">
                     <div class="card-body p-4">
                         <h4 class="card-title">Muskmelon Seeds</h4>
                         <p class="card-text">Muskmelons have cooling properties. They are good for skin and help in weight loss. Also cures constipation, bladder infections and fatigue.
@@ -353,19 +353,19 @@
                         <div class="d-flex">
                             <div></div>
                         </div>
-                        <a class="btn btn-primary" type="button" href="{% url 'view_details' seed_id=2 %}">View Details</a>
+                        <a class="btn btn-primary" type="button" href="{% url 'view_details' seed_id=8 %}">View Details</a>
                     </div>
                 </div>
             </div>
             <div class="col">
-                <div class="card"><img class="card-img-top w-100 d-block fit-cover" alt="A pile of seeds sitting on top of a table" data-bss-hover-animate="pulse" style="height: 200px;" src="{% static 'seed/img/photo-1719060038791-012d4a471d91.jpg' %}">
+                <div class="card"><img class="card-img-top w-100 d-block fit-cover" alt="A pile of seeds sitting on top of a table" data-bss-hover-animate="pulse" style="height: 200px;" src="{% static 'seed/img/buckwheat.jpg' %}">
                     <div class="card-body p-4">
                         <h4 class="card-title">Buckwheat</h4>
                         <p class="card-text">Buckwheat has become popular as a health food due to its high mineral and antioxidant content. Its benefits may include improved blood sugar control . It is not related to wheat and is thus gluten-free.</p>
                         <div class="d-flex">
                             <div></div>
                         </div>
-                        <a class="btn btn-primary" type="button" href="{% url 'view_details' seed_id=3 %}">View Details</a>
+                        <a class="btn btn-primary" type="button" href="{% url 'view_details' seed_id=9 %}">View Details</a>
                     </div>
                 </div>
             </div>
@@ -439,7 +439,12 @@
                     <div class="text-white p-4 p-md-5">
                         <h2 class="fw-bold mb-3">Tell us how can we improve!</h2>
                         <p class="mb-4">Is something missing?<br>Let Us Know!</p>
+                        {% if user.is_authenticated %}
                         <div class="my-3"><a class="btn btn-secondary me-2 mt-2" role="button" href="{% url 'contacts' %}">Give Feedback</a></div>
+                        {% else %}
+                        <div class="my-3"><a class="btn btn-secondary me-2 mt-2" role="button" href="{% url 'login_for_feedback' %}">Give Feedback</a></div>
+                        {% endif %}
+
                     </div>
                 </div>
                 <div class="col-md-6 order-first order-md-last" style="min-height: 250px;"><img class="w-100 h-100 fit-contain pt-5 pt-md-0" src="{% static 'seed/img/illustrations/web-development.svg' %}"></div>

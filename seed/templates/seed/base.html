@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -27,11 +28,21 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'explore' %}">Explore</a></li>
                     <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'testimonials' %}">Testimonials</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'login' %}">Log in</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'signup' %}">Sign up</a></li>
-                    <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'showcart' %}">Cart</a></li>
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'showcart' %}">Cart</a></li>
+                        <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'profile' %}">Profile</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'login' %}">Log in</a></li>
+                        <li class="nav-item"><a class="nav-link" data-bss-hover-animate="pulse" href="{% url 'signup' %}">Sign up</a></li>
+                    {% endif %}
                 </ul>
-                <a class="btn btn-primary shadow" role="button" href="{% url 'signup' %}">Sign up</a>
+                
+                {% if user.is_authenticated %}
+                    <a class="btn btn-primary shadow" role="button" href="{% url 'logout' %}">Log out</a>
+                {% else %}
+                    <a class="btn btn-primary shadow" role="button" href="{% url 'signup' %}">Sign up</a>
+                {% endif %}
             </div>
         </div>
     </nav>

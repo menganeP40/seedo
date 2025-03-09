@@ -13,10 +13,21 @@ urlpatterns = [
     # path('view_details/',views.view_details,name='view_details'),
     path('showcart/',views.showcart,name='showcart'),
     path('checkout/',views.checkout,name='checkout'),
+    path('logout/',views.logout_view,name='logout'),
+    path('profile/',views.profile, name='profile'),
+    
+    path('login_for_feedback/',views.login_for_feedback, name='login_for_feedback'),
 
     # Update this path in urls.py
     path('view_details/<int:seed_id>/', views.view_details, name='view_details'),
     # Add these new paths
-    path('add-to-cart/<int:seed_id>/', views.add_to_cart, name='add_to_cart'),
-    path('remove-from-cart/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+    path('add_to_cart/<int:seed_id>/', views.add_to_cart, name='add_to_cart'),
+    path('remove_from_cart/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
+
+
+
+
+    path('cart/', views.showcart, name='showcart'),
+    path('cart/update/<int:item_id>/', views.update_cart_item, name='update_cart_item'),
+    path('cart/remove/<int:item_id>/', views.remove_from_cart, name='remove_from_cart'),
 ]

@@ -18,6 +18,9 @@ urlpatterns = [
     
     path('login_for_feedback/',views.login_for_feedback, name='login_for_feedback'),
 
+
+    path('login_for_adding_to_cart/<int:seed_id>/',views.login_for_adding_to_cart , name='login_for_adding_to_cart'),
+
     # Update this path in urls.py
     path('view_details/<int:seed_id>/', views.view_details, name='view_details'),
     # Add these new paths

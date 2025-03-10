@@ -257,3 +257,58 @@ def login_for_feedback(request):
             form = AuthenticationForm()
     
     return render(request , 'seed/login.html' , {'form':form})
+
+
+
+# def login_for_adding_to_cart(request , seed_id):
+#     form = AuthenticationForm(request)
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request, data=request.POST)
+#         if form.is_valid():
+#             auth_login(request, form.get_user())
+
+#             seed= get_object_or_404(Seed , id = seed_id)
+#             cart , created = Cart.objects.get_or_create(user=request.user)
+#             cart_item , created = CartItem.objects.get_or_create(cart=cart , seed=seed)
+#             if not created:
+#                 cart_item.quantity += 1
+#                 cart_item.save()
+#             return redirect('showcart')
+#         else:
+#             form = AuthenticationForm()
+#     return render(request, 'seed/login.html' , {'form' : form})
+
+
+def login_for_adding_to_cart(request, seed_id):
+    # Try to get the seed first to validate it exists
+    seed = get_object_or_404(Seed, id=seed_id)
+    
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            # Log the user in
+            auth_login(request, form.get_user())
+            
+            # Add the seed to the cart
+            cart, created = Cart.objects.get_or_create(user=request.user)
+            cart_item, created = CartItem.objects.get_or_create(cart=cart, seed=seed)
+            if not created:
+                cart_item.quantity += 1
+                cart_item.save()
+            
+            # Redirect to cart
+            return redirect('showcart')
+    else:
+        form = AuthenticationForm(request)
+    
+    # Include seed information in the context to potentially display on the page
+    context = {
+        'form': form,
+        'seed': seed,
+        'login_for_cart': True  # A flag to indicate this is for adding to cart
+    }
+    return render(request, 'seed/login.html', context)
+
+
+
+

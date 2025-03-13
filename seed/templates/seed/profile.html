@@ -14,8 +14,7 @@
                         <h5 class="card-title">Account Menu</h5>
                         <div class="list-group">
                             <a href="{% url 'profile' %}" class="list-group-item list-group-item-action active">Profile</a>
-                            <a href="{% url 'order_history' %}" class="list-group-item list-group-item-action">Orders</a>
-                            <a href="{% url 'password_reset' %}" class="list-group-item list-group-item-action">Change Password</a>
+                            <a href="{% url 'forgot_password' %}" class="list-group-item list-group-item-action">Change Password</a>
                         </div>
                     </div>
                 </div>
@@ -42,6 +41,10 @@
                             <div class="mb-3">
                                 <label class="form-label">Last Name</label>
                                 <input type="text" class="form-control" name="last_name" value="{{ user.last_name }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <input type="text" class="form-control" name="last_name" value="{{ user.username}}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Email</label>

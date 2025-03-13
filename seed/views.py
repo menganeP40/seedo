@@ -104,7 +104,7 @@ def signup(request):
     return render(request, 'seed/signup.html' , {'form' : form})
 
 
-def forget_password(request):
+def forgot_password(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         try:
@@ -241,7 +241,7 @@ def logout_view(request):
 @login_required
 def profile(request):
     # return render(request, 'seed/profile.html')
-    return render(request,'seed/order_history.html')
+    return render(request,'seed/profile.html')
 
 
 
@@ -256,7 +256,7 @@ def login_for_feedback(request):
         else:
             form = AuthenticationForm()
     
-    return render(request , 'seed/login.html' , {'form':form})
+    return render(request , 'seed/signup.html' , {'form':form})
 
 
 
@@ -307,7 +307,7 @@ def login_for_adding_to_cart(request, seed_id):
         'seed': seed,
         'login_for_cart': True  # A flag to indicate this is for adding to cart
     }
-    return render(request, 'seed/login.html', context)
+    return render(request, 'seed/signup.html', context)
 
 
 

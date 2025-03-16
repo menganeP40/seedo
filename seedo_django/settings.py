@@ -149,3 +149,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 AUTH_USER_MODEL = 'seed.User'
+
+
+
+#configuring for email service 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+DEFAULT_FROM_EMAIL ='noreply@Seedo.com'
+

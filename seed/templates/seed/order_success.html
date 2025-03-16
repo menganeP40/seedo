@@ -1,0 +1,155 @@
+{% extends 'seed/base.html' %}
+
+{% block title %}Order Placed - Seedo{% endblock %}
+
+{% block extra_css %}
+<style>
+    .success-container {
+        text-align: center;
+        padding: 60px 0;
+    }
+    
+    .order-success {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .success-message {
+        position: relative;
+        z-index: 10;
+        color: #28a745;
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    
+    .success-icon {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 20px;
+    }
+    
+    .flower-animation {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        z-index: 1;
+    }
+    
+    .flower {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: #2ecc71;
+        border-radius: 50%;
+        opacity: 0;
+        animation: flower-circle 3s linear infinite;
+    }
+    
+    /* Create multiple flowers with different delays */
+    .flower:nth-child(1) { animation-delay: 0s; }
+    .flower:nth-child(2) { animation-delay: 0.25s; }
+    .flower:nth-child(3) { animation-delay: 0.5s; }
+    .flower:nth-child(4) { animation-delay: 0.75s; }
+    .flower:nth-child(5) { animation-delay: 1s; }
+    .flower:nth-child(6) { animation-delay: 1.25s; }
+    .flower:nth-child(7) { animation-delay: 1.5s; }
+    .flower:nth-child(8) { animation-delay: 1.75s; }
+    .flower:nth-child(9) { animation-delay: 2s; }
+    .flower:nth-child(10) { animation-delay: 2.25s; }
+    .flower:nth-child(11) { animation-delay: 2.5s; }
+    .flower:nth-child(12) { animation-delay: 2.75s; }
+    
+    @keyframes flower-circle {
+        0% {
+            transform: rotate(0deg) translateX(100px);
+            opacity: 1;
+        }
+        100% {
+            transform: rotate(360deg) translateX(100px);
+            opacity: 1;
+        }
+    }
+    
+    .order-details {
+        margin-top: 40px;
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: left;
+    }
+    
+    .order-details h4 {
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .next-steps {
+        margin-top: 30px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5 mt-5">
+    <div class="container py-4 py-xl-5">
+        <div class="success-container">
+            <div class="order-success">
+                <div class="success-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-check-circle-fill">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+                    </svg>
+                </div>
+                <h2 class="success-message">Order Placed!</h2>
+                <p>Your order (#{{ order.id }}) has been successfully placed.</p>
+                <p>A confirmation email has been sent to {{ order.email }}</p>
+                
+                <!-- Flower animation -->
+                <div class="flower-animation">
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                    <div class="flower"></div>
+                </div>
+            </div>
+            
+            <div class="order-details">
+                <h4>Order Summary</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p><strong>Name:</strong> {{ order.name }}</p>
+                        <p><strong>Shipping Address:</strong><br>
+                            {{ order.address }}<br>
+                            {{ order.city }}, {{ order.zip }}<br>
+                            {{ order.country }}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
+                        <p><strong>Order Total:</strong> Rs{{ order.total }}</p>
+                        <p><strong>Payment Method:</strong> Cash on Delivery</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="next-steps">
+                <p>We'll notify you when your order ships.</p>
+                <a href="{% url 'explore' %}" class="btn btn-primary mt-3">Continue Shopping</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

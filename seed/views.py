@@ -52,6 +52,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 
 
+#for email service 
+from .utils import send_order_success_email 
+
+
 
 
 
@@ -260,24 +264,6 @@ def login_for_feedback(request):
 
 
 
-# def login_for_adding_to_cart(request , seed_id):
-#     form = AuthenticationForm(request)
-#     if request.method == 'POST':
-#         form = AuthenticationForm(request, data=request.POST)
-#         if form.is_valid():
-#             auth_login(request, form.get_user())
-
-#             seed= get_object_or_404(Seed , id = seed_id)
-#             cart , created = Cart.objects.get_or_create(user=request.user)
-#             cart_item , created = CartItem.objects.get_or_create(cart=cart , seed=seed)
-#             if not created:
-#                 cart_item.quantity += 1
-#                 cart_item.save()
-#             return redirect('showcart')
-#         else:
-#             form = AuthenticationForm()
-#     return render(request, 'seed/login.html' , {'form' : form})
-
 
 def login_for_adding_to_cart(request, seed_id):
     # Try to get the seed first to validate it exists
@@ -312,3 +298,46 @@ def login_for_adding_to_cart(request, seed_id):
 
 
 
+#work in progress
+@login_required
+def checkout(request):
+    try:
+        cart = Cart.objects.get(user = request.user)
+
+        cart_items = cart.items.all()
+
+        if not cart_items:
+            return redirect('cart')
+        
+        total_amount = cart.get_total()
+
+        if request.method == 'POST':
+            shipping_address = request.POST.get('shipping_address')
+
+            #create the order 
+            order = Order.objects.create(
+                user = request.user,
+                total_amout = total_amount,
+                shipping_address = shipping_address,
+                status = 'pending'
+            )
+
+
+            #creating order items from cart item 
+            for cart_item in cart_items:
+                OrderItem.objects.create(
+                    order = order , 
+                    seed = cart_item.seed, 
+                    quantity = cart_item.quantity,
+                    price = cart_item.seed.price 
+                )
+
+            
+            #calling the method from utils 
+            send_order_success_email(order , request.user.email)
+
+
+            #clearing the items from the cart 
+            cart_items.delete()
+
+            

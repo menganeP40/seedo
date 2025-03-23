@@ -208,32 +208,32 @@ def remove_from_cart(request, item_id):
 
 
 
-@login_required
-def checkout(request):
-    cart = get_object_or_404(Cart , user=request.user)
-    if request.method == 'POST':
+# @login_required
+# def checkout(request):
+#     cart = get_object_or_404(Cart , user=request.user)
+#     if request.method == 'POST':
 
-        #create order form cart 
-        order = Order.objects.create(
-            user = request.user,
-            total_amount = cart.get_total(),
-            shipping_address = request.POST.get('shipping_address')
-        )
+#         #create order form cart 
+#         order = Order.objects.create(
+#             user = request.user,
+#             total_amount = cart.get_total(),
+#             shipping_address = request.POST.get('shipping_address')
+#         )
 
-        #create order item from cart item 
-        for cart_item in cart.items.all():
-            OrderItem.objects.create(
-                order = order ,
-                seed = cart_item.seed,
-                quantity = cart_item.quantity,
-                price = cart_item.seed.price
-            )
+#         #create order item from cart item 
+#         for cart_item in cart.items.all():
+#             OrderItem.objects.create(
+#                 order = order ,
+#                 seed = cart_item.seed,
+#                 quantity = cart_item.quantity,
+#                 price = cart_item.seed.price
+#             )
 
-        #clearing the cart 
-        cart.items.all().delete()
-        messages.success(request, 'Order placed successfully ')
-        return redirect('index')
-    return render(request, 'seed/checkout.html', {'cart':cart})
+#         #clearing the cart 
+#         cart.items.all().delete()
+#         messages.success(request, 'Order placed successfully ')
+#         return redirect('index')
+#     return render(request, 'seed/checkout.html', {'cart':cart})
 
 
 @login_required
@@ -298,46 +298,61 @@ def login_for_adding_to_cart(request, seed_id):
 
 
 
-#work in progress
 @login_required
 def checkout(request):
     try:
         cart = Cart.objects.get(user = request.user)
 
-        cart_items = cart.items.all()
-
-        if not cart_items:
-            return redirect('cart')
+        if not cart.items.exists():
+            messages.warning(request , 'your cart is empty')
+            return redirect('showcart')
         
-        total_amount = cart.get_total()
-
         if request.method == 'POST':
-            shipping_address = request.POST.get('shipping_address')
+            shipping_address = f"{request.POST.get('name')}, {request.POST.get('address')}, "
+            shipping_address += f"{request.POST.get('city')}, {request.POST.get('zip')}, {request.POST.get('country')}"
 
-            #create the order 
+            #creating the order 
             order = Order.objects.create(
                 user = request.user,
-                total_amout = total_amount,
+                total_amout = cart.get_total(),
                 shipping_address = shipping_address,
-                status = 'pending'
+                status = "Pending"
             )
 
-
-            #creating order items from cart item 
-            for cart_item in cart_items:
+            #create order items from cart items 
+            for cart_item in cart.items.all():
                 OrderItem.objects.create(
-                    order = order , 
+                    order = order, 
                     seed = cart_item.seed, 
-                    quantity = cart_item.quantity,
-                    price = cart_item.seed.price 
+                    quantity = cart_item.quantity, 
+                    price = cart_item.seed.price
                 )
 
-            
-            #calling the method from utils 
-            send_order_success_email(order , request.user.email)
+            # Optional: Send confirmation email if you have this function
+            # send_order_success_email(order, request.user.email)
+
+            #clearing the cart after order is placed 
+            cart.items.all().delete()
 
 
-            #clearing the items from the cart 
-            cart_items.delete()
+            messages.success(request , "Order placed successfully")
+            return redirect('order_confirmation' , order_id = order.id)
+        
+        return render(request , 'seed/checkout.html' , {'cart' : cart})
+    
+    except Cart.DoesNotExist:
+        messages.warning(request , "You don't have active cart")
+        return redirect('shop')
+    
 
-            
+
+@login_required
+def order_confirmation(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id, user=request.user)
+        return render(request, 'seed/order_success.html', {'order': order})
+    except Order.DoesNotExist:
+        return redirect('shop')
+    
+    
+

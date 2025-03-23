@@ -12,6 +12,7 @@
     .order-success {
         position: relative;
         display: inline-block;
+        margin-bottom: 40px;
     }
     
     .success-message {
@@ -27,12 +28,14 @@
         font-size: 4rem;
         color: #28a745;
         margin-bottom: 20px;
+        position: relative;
+        z-index: 10;
     }
     
     .flower-animation {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 170px; /* Adjusted to center around the checkmark */
+        left: 76%;
         transform: translate(-50%, -50%);
         width: 250px;
         height: 250px;
@@ -66,31 +69,51 @@
     
     @keyframes flower-circle {
         0% {
-            transform: rotate(0deg) translateX(100px);
+            transform: rotate(0deg) translateX(60px); /* Reduced radius to fit around checkmark */
             opacity: 1;
         }
         100% {
-            transform: rotate(360deg) translateX(100px);
+            transform: rotate(360deg) translateX(60px);
             opacity: 1;
         }
     }
     
     .order-details {
         margin-top: 40px;
-        background-color: #f8f9fa;
-        padding: 20px;
+        background-color: #e9ecef; /* Darker background for better contrast */
+        padding: 25px;
         border-radius: 8px;
         text-align: left;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Added shadow for depth */
     }
     
     .order-details h4 {
         border-bottom: 1px solid #dee2e6;
         padding-bottom: 10px;
         margin-bottom: 20px;
+        color: #212529; /* Darker text color */
+    }
+    
+    .order-details p {
+        color: #212529; /* Darker text color for better visibility */
+        margin-bottom: 10px;
+    }
+    
+    .order-details strong {
+        color: #24285b; /* Blue color for labels to stand out */
     }
     
     .next-steps {
         margin-top: 30px;
+    }
+    
+    /* Added a container for order confirmation details */
+    .confirmation-details {
+        background-color: #24285b;
+        padding: 15px;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        border-left: 4px solid #28a745;
     }
 </style>
 {% endblock %}
@@ -105,11 +128,8 @@
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
                     </svg>
                 </div>
-                <h2 class="success-message">Order Placed!</h2>
-                <p>Your order (#{{ order.id }}) has been successfully placed.</p>
-                <p>A confirmation email has been sent to {{ order.email }}</p>
                 
-                <!-- Flower animation -->
+                <!-- Flower animation repositioned to be around the checkmark -->
                 <div class="flower-animation">
                     <div class="flower"></div>
                     <div class="flower"></div>
@@ -124,22 +144,27 @@
                     <div class="flower"></div>
                     <div class="flower"></div>
                 </div>
+                
+                <h2 class="success-message">Order Placed!</h2>
+                
+                <div class="confirmation-details">
+                    <p>Your order (#{{ order.id }}) has been successfully placed.</p>
+                    <p>A confirmation email has been sent to {{ user.email }}</p>
+                </div>
             </div>
             
             <div class="order-details">
                 <h4>Order Summary</h4>
                 <div class="row">
                     <div class="col-md-6">
-                        <p><strong>Name:</strong> {{ order.name }}</p>
+                        <p><strong>Name:</strong> {{ order.user.get_full_name }}</p>
                         <p><strong>Shipping Address:</strong><br>
-                            {{ order.address }}<br>
-                            {{ order.city }}, {{ order.zip }}<br>
-                            {{ order.country }}
+                            {{ order.shipping_address }}
                         </p>
                     </div>
                     <div class="col-md-6">
                         <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y" }}</p>
-                        <p><strong>Order Total:</strong> Rs{{ order.total }}</p>
+                        <p><strong>Order Total:</strong> Rs{{ order.total_amout }}</p>
                         <p><strong>Payment Method:</strong> Cash on Delivery</p>
                     </div>
                 </div>
